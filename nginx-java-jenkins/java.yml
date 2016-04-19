@@ -1,0 +1,8 @@
+# ansible-galaxy install telusdigital.java
+---
+ - hosts: all
+   become: yes
+   roles:
+    - role: telusdigital.java
+      java_version: 8
+

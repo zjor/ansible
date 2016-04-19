@@ -1,0 +1,11 @@
+# ansible-galaxy install geerlingguy.jenkins
+- hosts: ci
+  become: yes
+  vars:
+    jenkins_hostname: localhost
+    jenkins_http_port: 8080
+  roles:
+    - geerlingguy.jenkins
+
+
+
