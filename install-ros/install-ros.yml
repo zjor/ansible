@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Setup sources.list
+      shell: sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+    - name: Setup keys
+      shell: apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116      
+
+    - name: Update cache
+      apt: 
+        update_cache: yes
+
+    - name: Install ROS-Base
+      apt: name={{item}} state=installed
+      with_items:
+        - build-essential
+        - ros-indigo-ros-base
