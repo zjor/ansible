@@ -6,22 +6,14 @@
     user: "{{ user }}"
 
    tasks:
-    - name: Create .ssh directory
-      file: state=directory mode=0700 dest=~/.ssh/
+    - name: Add user specified as an argument
+      user:
+        name: "{{ user }}"
+        shell: /bin/bash
+        groups: wheel
 
-    - name: Check if authorized_keys file exists
-      stat: path=~/.ssh/authorized_keys
-      register: authorized_keys
-
-    - name: Create authorized_keys if not present
-      file: path=~/.ssh/authorized_keys state=touch mode=0600
-      when: not (authorized_keys.stat.isreg is defined and authorized_keys.stat.isreg)
-
-    - name: Copy local ~/.ssh/id_rsa.pub
-      copy: src=~/.ssh/id_rsa.pub dest=~/.ssh/{{ user }}.id_rsa.pub
-      register: upload_local_key
-
-    - name: Add uploaded key to authorized_keys
-      shell: cat ~/.ssh/{{ user }}.id_rsa.pub >> ~/.ssh/authorized_keys
-      when: upload_local_key.changed
-
+    - name: Set authorized key
+      authorized_key:
+        user: "{{ user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
